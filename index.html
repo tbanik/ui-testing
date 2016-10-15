@@ -1,29 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="registerApp" ng-controller="registerCtrl">
     <head>
-        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Angular Register Test</title>
         <link href="https://fonts.googleapis.com/css?family=Rubik:400,500,700" rel="stylesheet">
         <link rel="stylesheet" href="css/main.min.css">
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
     </head>
     <body>
 
         <div class="wrapper">
-            <form class="register">
+            <form class="register" autocomplete="off">
                 <div class="register-box">
                     <div class="register-head">
                         <h1>Account Registration</h1>
                     </div>
                     <div class="register-input">
                           <label for="email">Email</label>
-                          <input type="text" id="email" name="email" tabindex="1">
-                          <div class="register-input-notice error show">Oops! This email is already registered. If you forgot your password, <a href="#">click here to reset it.</a></div>
+                          <input type="text" id="email" name="email" tabindex="1" ng-model="email">
+                          <div class="register-input-notice error show">Oops! This email is already registered. If you forgot your password, <a href="#" onclick="return false;">click here to reset it.</a></div>
                     </div>
                     <div class="register-input">
-                          <label for="password">Password</label>
-                          <input type="password" id="password" name="password" tabindex="2">
-                          <div class="register-input-notice warning show">Are you sure you want to use that password? Your safety is our #1 priority, which is why we recommend a password of strength level 3 or higher.</div>
+                        <label for="password">Password</label>
+                        <div class="password-check">
+                            <div class="seg on"></div>
+                            <div class="seg on"></div>
+                            <div class="seg on"></div>
+                            <div class="seg on"></div>
+                        </div>
+                        <input type="password" id="password" name="password" tabindex="2">
+                        <div class="register-input-notice warning show">Are you sure you want to use that password? Your safety is our #1 priority, which is why we recommend a password of strength level 3 or higher.</div>
                     </div>
                     <div class="register-input">
                           <label for="confirm">Confirm Password</label>

@@ -113,6 +113,7 @@ body {
             display: none;
             width: 100%;
             border-radius: $border-radius;
+            color: $text-color;
             margin-top: 15px;
             padding:15px 10px;
             font-size: 13px;
@@ -165,6 +166,30 @@ body {
             line-height: 1;
             text-transform: uppercase;
             letter-spacing: .15em;
+        }
+
+        .password-check{
+            width:140px;
+            height:10px;
+            border-radius: $border-radius;
+            border:1px solid $border-color;
+            margin-top: 2px;
+
+            .seg{
+                width:25%;
+                height:8px;
+                border-right:1px solid $border-color;
+                float:left;
+
+                &:last-child{
+                    border:none;
+                }
+
+                &.on{
+                    background:$primary-accent;
+                }
+            }
+
         }
 
         input {
