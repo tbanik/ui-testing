@@ -7,7 +7,10 @@
         <link href="https://fonts.googleapis.com/css?family=Rubik:400,500,700" rel="stylesheet">
         <link rel="stylesheet" href="css/main.min.css">
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.0/zxcvbn.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
     </head>
     <body>
 
@@ -19,23 +22,24 @@
                     </div>
                     <div class="register-input">
                           <label for="email">Email</label>
-                          <input type="text" id="email" name="email" tabindex="1" ng-model="email">
-                          <div class="register-input-notice error show">Oops! This email is already registered. If you forgot your password, <a href="#" onclick="return false;">click here to reset it.</a></div>
+                          <input type="text" id="email" name="email" tabindex="1" ng-model="email" ng-blur="emailBlur($event)">
+                          <div class="register-input-notice"></div>
                     </div>
                     <div class="register-input">
                         <label for="password">Password</label>
                         <div class="password-check">
-                            <div class="seg on"></div>
-                            <div class="seg on"></div>
-                            <div class="seg on"></div>
-                            <div class="seg on"></div>
+                            <div class="seg"></div>
+                            <div class="seg"></div>
+                            <div class="seg"></div>
+                            <div class="seg"></div>
                         </div>
-                        <input type="password" id="password" name="password" tabindex="2">
-                        <div class="register-input-notice warning show">Are you sure you want to use that password? Your safety is our #1 priority, which is why we recommend a password of strength level 3 or higher.</div>
+                        <input type="password" id="password" name="password" tabindex="2"  ng-model="password" ng-change="passChange()" ng-blur="passBlur($event)" ng-model-options="{ debounce: 150 }">
+                        <div class="register-input-notice"></div>
                     </div>
                     <div class="register-input">
                           <label for="confirm">Confirm Password</label>
-                          <input type="password" id="confirm" name="confirm" tabindex="3">
+                          <input type="password" id="confirm" name="confirm" tabindex="3" ng-model="passwordConfirm" ng-blur="passConfirmBlur($event)">
+                          <div class="register-input-notice"></div>
                     </div>
                     <div class="register-note">
                         We value privacy and we'll never share your information. Also this is a mock form, so it doesn't do anything with your information anyway.
