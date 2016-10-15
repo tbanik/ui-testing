@@ -1,12 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Angular Register Test</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.min.css">
-  </head>
-  <body>
+    <head>
+        <meta charset="utf-8">
+        <title>Angular Register Test</title>
+        <link href="https://fonts.googleapis.com/css?family=Rubik:400,500,700" rel="stylesheet">
+        <link rel="stylesheet" href="css/main.min.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+    </head>
+    <body>
 
-  </body>
+        <div class="wrapper">
+            <form class="register">
+                <div class="register-box">
+                    <div class="register-head">
+                        <h1>Account Registration</h1>
+                    </div>
+                    <div class="register-input">
+                          <label for="email">Email</label>
+                          <input type="text" id="email" name="email" tabindex="1">
+                          <div class="register-input-notice error show">Oops! This email is already registered. If you forgot your password, <a href="#">click here to reset it.</a></div>
+                    </div>
+                    <div class="register-input">
+                          <label for="password">Password</label>
+                          <input type="password" id="password" name="password" tabindex="2">
+                          <div class="register-input-notice warning show">Are you sure you want to use that password? Your safety is our #1 priority, which is why we recommend a password of strength level 3 or higher.</div>
+                    </div>
+                    <div class="register-input">
+                          <label for="confirm">Confirm Password</label>
+                          <input type="password" id="confirm" name="confirm" tabindex="3">
+                    </div>
+                    <div class="register-note">
+                        We value privacy and we'll never share your information. Also this is a mock form, so it doesn't do anything with your information anyway.
+                    </div>
+                    <div class="register-input">
+                          <button type="submit" id="submit" name="submit" tabindex="4">Register Account</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </body>
 </html>
