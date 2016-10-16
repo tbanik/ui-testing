@@ -14,6 +14,7 @@ http://tbanik.github.io/uitest-angular-register
 9. Returns to the account creation screen.
 
 ##Some test info to use to see all the logic at work:
+* first of all, just press register to see the required field test.
 * "tony.banik@gmail.com" - to see the "this email is already registered" message.
 * "test@example.com" - to see the warning about possible safety issues.
 * passwords:
