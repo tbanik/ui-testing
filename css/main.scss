@@ -27,7 +27,9 @@ html {
   box-sizing: inherit;
 }
 
-::-webkit-validation-bubble-message { display: none; }
+.noselect{
+    user-select: none;
+}
 
 body {
     font-family: $body-font;

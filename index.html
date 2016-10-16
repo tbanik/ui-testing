@@ -16,7 +16,7 @@
         <div class="wrapper">
             <form class="register" name="register" autocomplete="off" ng-submit="regSubmit()" novalidate>
                 <div class="register-box">
-                    <div class="register-head">
+                    <div class="register-head noselect">
                         <h1>Account Registration</h1>
                     </div>
                     <div class="register-input">
@@ -40,11 +40,11 @@
                     <div class="register-note">
                         We value privacy and we'll never share your information. Also this is a mock form, so it doesn't do anything with your information anyway.
                     </div>
-                    <div class="register-input">
+                    <div class="register-input noselect">
                           <button type="submit" id="submit" name="submit" tabindex="4">{{buttonText}}</button>
                     </div>
                 </div>
-                <div class="register-loader" ng-class="loading">
+                <div class="register-loader noselect" ng-class="loading">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" viewBox="0 0 60 60">
                         <g class="register-loader-rotate">
                             <circle class="register-loader-main" cx="30" cy="30" r="17" stroke-dasharray="107" stroke-dashoffset="160" />
