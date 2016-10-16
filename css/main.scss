@@ -234,6 +234,7 @@ body {
             text-transform: uppercase;
             cursor: pointer;
             transition: 0.1s ease;
+            box-shadow: inset 0 0 0 1px rgba($blk,0.1);
 
             &:hover, &:focus, &:active{
                 background: rgba($primary-accent, 0.9);
