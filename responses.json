@@ -1,0 +1,12 @@
+{
+  "response": {
+      "requiredField": "<span>This is a required field.<span>",
+      "emailExists": "<span>Oops! This email is already registered. If you forgot your password, <a href=\"#\" onclick=\"return false;\">click here to reset it.</a><span>",
+      "emailInvalid": "<span>This doesn't appear to be a valid email. We are looking for something along the lines of \"test@example.com\"<span>",
+      "emailBreach": "<span>Are you sure this email is secure? According to <a ng-href=\"https://haveibeenpwned.com/account/{{email}}\" target=\"_blank\">haveibeenpwned.com</a> this email has been compromised in at least one past data breach. Click the link to find the list of websites. If you choose to still use this email, please make sure you use a different password.</span>",
+      "passStrError": "<span>Sorry, your password strength must be at least level 2 to register. Try adding another word or two.<span>",
+      "passStrWarning": "<span>Are you sure you want to use that password? Your safety is our highest priority, which is why we recommend a password of strength level 3 or higher.<span>",
+      "passIllegal": "<span>Please only use alphanumeric characters and the following special characters \"-_!@#$%^&*?\" up to 48 characters.<span>",
+      "passMismatch": "<span>Your passwords do not match, please re-type them to ensure your account information is correct.<span>"
+    }
+}

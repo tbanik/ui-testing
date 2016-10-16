@@ -1,113 +1,205 @@
 var app = angular.module('registerApp', []);
 
-app.controller('registerCtrl', function($scope,$http) {
+app.directive('dynamic', function ($compile) {
+    return {
+        restrict: 'A',
+        replace: true,
+        link: function (scope, ele, attrs) {
+            scope.$watch(attrs.dynamic, function(html) {
+                ele.html(html);
+                $compile(ele.contents())(scope);
+            });
+        }
+    };
+});
 
-    $scope.email= "";
-    $scope.password= "";
-    $scope.passwordConfirm= "";
-    $scope.score = 0;
+app.controller('registerCtrl', function($scope,$http,$compile,$timeout) {
 
-    //All my error texts, definately a better place for these...
-    $scope.emailError = 'Oops! This email is already registered. If you forgot your password, <a href="#" onclick="return false;">click here to reset it.</a>';
-    $scope.emailValidError = "This doesn't appear to be a valid email. We are looking for something along the lines of &quot;test@example.com&quot;";
-    $scope.emailBreachError = "Are you sure this email is secure? According to <a href='https://haveibeenpwned.com/account/EMAILHERE' target='_blank'>haveibeenpwned.com</a> this email has been compromised in at least one past data breach. Click the link to find the list of websites. If you choose to still use this email, please make sure you use a different password.";
-
-    $scope.passError = "Sorry, your password strength must be at least level 2 to register. Try adding another word or two.";
-    $scope.passWarning = "Are you sure you want to use that password? Your safety is our highest priority, which is why we recommend a password of strength level 3 or higher.";
-    $scope.passRegexError = 'Please only use alphanumeric characters and the following special characters "-_!@#$%^&*?"';
-    $scope.passMismatchError = "Your passwords do not match, please re-type them to ensure your account information is correct.";
-
-    var regex = /^[a-zA-Z0-9-_!@#$%^&*?]{0,48}$/
-
-    $scope.validEmail = function(email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
+    $scope.resetData = function() {
+        //Main
+        $scope.email = null;
+        $scope.password = null;
+        $scope.passwordConfirm = null;
+        $scope.pwcheck = [];
+        $scope.notices = {
+            "email": null,
+            "pass": null,
+            "passc": null
+        };
+        $scope.classes = {
+            "email": null,
+            "pass": null,
+            "passc": null
+        };
+        $scope.loading = null;
+        $scope.warnings = [false,false];
+        $scope.buttonText = "Register Account";
+        document.getElementsByTagName("input")[0].focus();
     }
 
-    $scope.emailBlur = function(e) {
-        var myEmail = "tony.banik@gmail.com";
+    $scope.resetData();
+
+    //Load error/warning responses from json
+    $http.get('responses.json')
+        .then(function(res){
+            $scope.responses = res.data.response;
+        });
+
+    $scope.validData = function(str, toTest) {
+        //password and email regex validation. Angulars regex allows for emails like "test@example" which we don't want.
+        var passRe = /^[a-zA-Z0-9-_!@#$%^&*?]{0,48}$/;
+        var emailRe = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (toTest == "email") {
+            return emailRe.test(str);
+        } else {
+            return passRe.test(str);
+        }
+    }
+
+    $scope.updateNotice = function(msg,classes,ele){
+        this.notices[ele] = msg;
+        this.classes[ele] = classes;
+    }
+
+    $scope.emailBlur = function(vc) {
+        $scope.validCheck(false,0);
         //since there's no real accounts, im using my email as the "this email is already registered" account
         //but this is where you would check a db for the email
+        var myEmail = "tony.banik@gmail.com";
 
-        if (this.validEmail(this.email)) {
-            if (this.email === myEmail) {
-                $(e.target).parent().children('.register-input-notice').
-                    removeClass('error warning show').
-                    html(this.emailError).
-                    addClass('error show');
+        if (this.validData(this.email, 'email')) {
+            if (this.email.toUpperCase() === myEmail.toUpperCase()) {
+                $scope.updateNotice(this.responses.emailExists, "error show", "email");
             }else{
-                //here is where we're checking to see if this email has been compromised in a data breach via this absurdly named website "haveibeenpwned.com"
-                $http({
-                  method: 'GET',
-                  url: 'https://haveibeenpwned.com/api/v2/breachedaccount/' + this.email,
-                  params: {truncateResponse: true, element: e.target, message: this.emailBreachError}
-                }).then(function successCallback(response) {
-                    if (response.data.length) {
-                        var mess = response.config.params.message;
-                        mess = mess.split('EMAILHERE');
-                        mess = mess[0] + $scope.email + mess[1];
-                        $(response.config.params.element).parent().children('.register-input-notice').
-                            removeClass('error warning show').
-                            html(mess).
-                            addClass('warning show');
-                    }
-                }, function errorCallback(response) {
-                    $(response.config.params.element).parent().children('.register-input-notice').
-                        removeClass('error warning show').
-                        html('');
-                });
+                if (vc) {
+                    //checking to see if this email has been compromised in a data breach via this absurdly named website "haveibeenpwned.com"
+                    $http.get('https://haveibeenpwned.com/api/v2/breachedaccount/' + this.email,{
+                        params: {truncateResponse: true}
+                    }).then(function(response) {
+                        if (response.data.length) {
+                            $scope.updateNotice($scope.responses.emailBreach, "warning show", "email");
+                            if (!$scope.warnings[0]) {
+                                $scope.warnings[0] = true;
+                                $scope.buttonText = "Dismiss & Register";
+                            }else{
+                                $scope.updateNotice(null, null, "email");
+                                $scope.validCheck(true,0);
+                            }
+                        }
+                    }, function (response) {
+                        $scope.updateNotice(null, null, "email");
+                        $scope.validCheck(true,0);
+                    });
+                }else{
+                    $scope.updateNotice(null, null, "email");
+                }
             }
+        }else if(typeof this.email == "string" && this.email == "" || typeof this.email == "object"){
+            $scope.updateNotice(null, null, "email");
         }else{
-            $(e.target).parent().children('.register-input-notice').
-                removeClass('error warning show').
-                html(this.emailValidError).
-                addClass('error show');
+            $scope.updateNotice($scope.responses.emailInvalid, "error show", "email");
         }
 
     }
 
     $scope.passOutput = function(score) {
         $scope.score = score;
-        $('.seg').removeClass('on');
+        $scope.pwcheck = [];
         for (var i = 0; i < score; i++) {
-            $('.seg').eq(i).addClass('on');
+            $scope.pwcheck[i+1] = "on";
         }
     }
 
-    $scope.passChange = function(e) {
-        var notice = $('#password').parent().children('.register-input-notice');
-        if(!regex.test(this.password)){
-            notice.removeClass('error warning show');
-            notice.html(this.passRegexError).addClass('error show');
+    $scope.passChange = function() {
+        if(!this.validData(this.password, 'password')){
+            $scope.updateNotice($scope.responses.passIllegal, "error show", "pass");
+            this.passOutput(0);
         }else{
-            notice.removeClass('error warning show');
+            $scope.updateNotice(null, null, "pass");
             var score = zxcvbn(this.password);
             this.passOutput(score.score);
         }
     }
 
-    $scope.passBlur = function(e) {
-        var notice = $(e.target).parent().children('.register-input-notice');
-        if (this.password != '') {
-            if (this.score < 2) {
-                notice.removeClass('error warning show');
-                notice.html(this.passError).addClass('error show');
-            }else if(this.score < 3){
-                notice.removeClass('error warning show');
-                notice.html(this.passWarning).addClass('warning show');
-            }else{
-                notice.removeClass('error warning show').html('');
-            }
+    $scope.passBlur = function(vc) {
+        $scope.validCheck(false,1);
+        if(!this.validData(this.password, 'password')){
+            $scope.updateNotice($scope.responses.passIllegal, "error show", "pass");
+            this.passOutput(0);
         }else{
-            notice.removeClass('error warning show');
+            if (this.password != '') {
+                if (this.score < 2) {
+                    $scope.updateNotice($scope.responses.passStrError, "error show", "pass");
+                }else if(this.score < 3){
+                    if (vc) {
+                        if (!$scope.warnings[1]) {
+                            $scope.warnings[1] = true;
+                            $scope.buttonText = "Dismiss & Register";
+                            $scope.updateNotice($scope.responses.passStrWarning, "warning show", "pass");
+                        }else{
+                            $scope.updateNotice(null, null, "pass");
+                            $scope.validCheck(true,1);
+                        }
+                    }
+                }else{
+                    $scope.updateNotice(null, null, "pass");
+                    if (vc) {
+                        $scope.validCheck(true,1);
+                    }
+                }
+            }else{
+                $scope.updateNotice(null, null, "pass");
+            }
         }
     }
 
-    $scope.passConfirmBlur = function(e) {
-        var notice = $(e.target).parent().children('.register-input-notice');
-            notice.removeClass('error warning show');
+    $scope.passConfirmBlur = function(vc) {
+        $scope.validCheck(false,2);
         if (this.password !== this.passwordConfirm) {
-            notice.html(this.passMismatchError).addClass('error show');
+            $scope.updateNotice($scope.responses.passMismatch, "error show", "passc");
+        }else if(typeof this.passwordConfirm == "string" && this.passwordConfirm == "" || typeof this.passwordConfirm == "object"){
+            $scope.updateNotice(null, null, "passc");
+        }else{
+            $scope.updateNotice(null, null, "passc");
+            if (vc) {
+                $scope.validCheck(true,2);
+            }
+        }
+    }
+
+    $scope.regSubmit = function() {
+
+        $scope.valid = [false,false,false,true ]; /* 4th value so we can compare them later*/
+
+        if(typeof this.email == "string" && this.email == "" || typeof this.email == "object"){
+            $scope.updateNotice($scope.responses.requiredField, "error show", "email");
+        }else{
+            this.emailBlur(true);
+        }
+
+        if(typeof this.password == "string" && this.password == "" || typeof this.password == "object"){
+            $scope.updateNotice($scope.responses.requiredField, "error show", "pass");
+        }else{
+            this.passBlur(true);
+        }
+
+        if(typeof this.passwordConfirm == "string" && this.passwordConfirm == "" || typeof this.passwordConfirm == "object"){
+            $scope.updateNotice($scope.responses.requiredField, "error show", "passc");
+        }else{
+            this.passConfirmBlur(true);
+        }
+    }
+
+    $scope.validCheck = function(boole, id) {
+        if ($scope.valid) {
+            $scope.valid[id] = boole;
+            if (!!$scope.valid.reduce(function(a, b){ return (a === b) ? a : NaN; })) {
+                $scope.loading = "open";
+                for (var i = 0; i < document.getElementsByTagName("input").length; i++) {
+                    document.getElementsByTagName("input")[i].blur();
+                }
+                $timeout($scope.resetData, 3500);
+            }
         }
     }
 

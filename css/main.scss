@@ -17,6 +17,7 @@ $warning-color: rgba(#f5ce42, 0.2);
 $border-radius: 4px;
 $break-small: 620px;
 $notice-trangle: 8px;
+$loader-size: 200px;
 
 html {
   box-sizing: border-box;
@@ -25,6 +26,8 @@ html {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+
+::-webkit-validation-bubble-message { display: none; }
 
 body {
     font-family: $body-font;
@@ -58,6 +61,7 @@ body {
     max-width: 550px;
     background: $wht;
     border-radius: $border-radius;
+    overflow: hidden;
     box-shadow: 0 0 30px rgba($blk, .1);
 
     @media screen and (max-width: $break-small) {
@@ -181,6 +185,7 @@ body {
                 height:10px;
                 border-right:1px solid $border-color;
                 float:left;
+                transition: 0.5s ease;
 
                 &:last-child{
                     border:none;
@@ -235,4 +240,57 @@ body {
             }
         }
     }
+
+    &-loader{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top:0;
+        left:0;
+        display: flex;
+        visibility: hidden;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        background: rgba($wht, 0.85);
+        opacity:0;
+        transition: 1s ease;
+
+        svg {
+            width: $loader-size;
+            height: $loader-size;
+        }
+
+        &.open{
+            visibility: visible;
+            opacity:1;
+        }
+    }
+
+    &-loader-rotate{
+        animation: rotateme 1s infinite linear;
+        transform-origin: 30px 30px;
+    }
+
+    &-loader-main{
+        fill: transparent;
+        animation: showload 1.5s infinite linear;
+        transform-origin: 50% 50%;
+        stroke: $primary-accent;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round
+    }
+
+    @keyframes showload {
+        0%    { stroke-dashoffset: 0; stroke-dasharray: 1,214 }
+        50%  { stroke-dashoffset: -24; stroke-dasharray: 80,214 }
+        100%  { stroke-dashoffset: -107; stroke-dasharray: 80,214 }
+    }
+
+    @keyframes rotateme {
+        0%    { transform: rotate(0deg) }
+        100%  { transform: rotate(360deg) }
+    }
+
 }
