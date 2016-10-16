@@ -19,7 +19,9 @@ http://tbanik.github.io/uitest-angular-register
 * passwords:
   * try out some common passwords to see how zxcvbn works. and check out their repo listed below.
   * try using a password that is at each level to see the different results.
-* and finally, make the passwords mismatch to see that error in place.
+* make the passwords mismatch to see that error in place.
+* trying it out on mobile to see the responsive design. It looks great on every device.
+
 
 ##Resources used:
 * [AngularjS](https://github.com/angular/angular.js)
